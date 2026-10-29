@@ -1,0 +1,470 @@
+/* ==========================================================================
+   MWALI Baby Shop — Feuille de Style Responsive Dédiée au Panneau d'Administration
+   Media Queries & Règles Adaptatives : Mobile (576px), Tablette (768px), 
+   Petit Desktop (992px) et Desktop (1200px).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Base Styles & Utilitaires pour le Back-Office Admin
+   -------------------------------------------------------------------------- */
+.admin-portal {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  background-color: #f8f9fa;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.admin-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+  padding: 2rem;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-card {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(231, 229, 228, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(231, 229, 228, 0.8);
+  background-color: #ffffff;
+}
+
+.admin-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.875rem 1rem;
+  white-space: nowrap;
+}
+
+/* Modale Admin Responsive */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.admin-modal-card {
+  width: 100%;
+  max-width: 48rem;
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid #e7e5e4;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+}
+
+.admin-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e7e5e4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background-color: #ffffff;
+}
+
+.admin-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+}
+
+.admin-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e7e5e4;
+  background-color: #fafaf9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Formulaires & Champs Admin */
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e7e5e4;
+  background-color: #ffffff;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #1c1917;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  outline: none;
+  border-color: #1c1917;
+  box-shadow: 0 0 0 2px rgba(28, 25, 23, 0.1);
+}
+
+/* Boutons Admin Touch-Friendly */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  min-height: 42px;
+  cursor: pointer;
+}
+
+.admin-btn-primary {
+  background-color: #1c1917;
+  color: #ffffff;
+}
+.admin-btn-primary:hover {
+  background-color: #000000;
+}
+
+.admin-btn-secondary {
+  background-color: #f5f5f4;
+  color: #44403c;
+  border: 1px solid #e7e5e4;
+}
+.admin-btn-secondary:hover {
+  background-color: #e7e5e4;
+  color: #1c1917;
+}
+
+/* ==========================================================================
+   BREAKPOINT 4 : Desktop & Écrans Moyens (<= 1200px)
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .admin-main {
+    padding: 1.5rem;
+  }
+
+  /* Tableaux : défilement horizontal fluide si colonnes serrées */
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 0.875rem;
+  }
+
+  /* Grille des indicateurs KPI */
+  .admin-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT 3 : Petit Desktop & Portables Compacts (<= 992px)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .admin-portal {
+    flex-direction: column;
+  }
+
+  .admin-main {
+    padding: 1.25rem;
+    max-width: 100%;
+  }
+
+  /* Sidebar masquée sur desktop au profit de la navigation mobile */
+  .admin-desktop-sidebar {
+    display: none !important;
+  }
+
+  .admin-mobile-topbar {
+    display: flex !important;
+  }
+
+  /* Formulaires : passage de 3 colonnes à 2 ou 1 colonne */
+  .admin-form-grid-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
+  .admin-analytics-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT 2 : Tablettes & iPads (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .admin-main {
+    padding: 1rem;
+  }
+
+  /* Cartes de tableau de bord */
+  .admin-card {
+    border-radius: 1rem;
+    padding: 1rem !important;
+  }
+
+  /* Titres et en-têtes de section */
+  .admin-page-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .admin-page-header h2 {
+    font-size: 1.25rem !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Formulaires : tous les sous-champs en 1 colonne */
+  .admin-form-grid-2,
+  .admin-form-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Tableaux administratifs : conteneur scroll horizontal avec indicateur */
+  .admin-table-container {
+    border-radius: 1rem;
+    box-shadow: inset -10px 0 10px -10px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 0.75rem;
+    padding: 0.625rem 0.75rem;
+  }
+
+  /* Boutons d'action */
+  .admin-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Modale Admin : occuper la quasi-totalité de l'écran */
+  .admin-modal-card {
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    max-height: 92dvh !important;
+    margin: 0.5rem;
+    border-radius: 1.25rem;
+  }
+
+  .admin-modal-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .admin-modal-body {
+    padding: 1rem;
+  }
+
+  .admin-modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .admin-modal-footer button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT 1 : Smartphones & Mobiles (<= 576px)
+   Résolution de tous les problèmes de débordement, textes coupés et boutons
+   ========================================================================== */
+@media (max-width: 576px) {
+  /* Espacements optimisés pour ne pas gaspiller l'écran */
+  .admin-main {
+    padding: 0.75rem !important;
+  }
+
+  /* Typographie protégée contre le débordement */
+  .admin-page-header h2,
+  h2.font-\[\'Playfair_Display\'\,serif\] {
+    font-size: 1.125rem !important;
+    line-height: 1.3 !important;
+    word-break: break-word;
+  }
+
+  .admin-page-header p,
+  p.text-xs.text-stone-500 {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    word-break: break-word;
+  }
+
+  /* Barre de recherche et filtres admin */
+  .admin-filter-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+  }
+
+  .admin-filter-bar > div {
+    width: 100% !important;
+  }
+
+  /* Formulaires : inputs touch-friendly (16px minimum pour stopper zoom iOS) */
+  .admin-input,
+  .admin-select,
+  .admin-textarea,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
+    padding: 0.625rem 0.75rem !important;
+    border-radius: 0.75rem !important;
+    min-height: 44px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+
+  /* Labels espacés convenablement pour éviter qu'ils collent aux inputs */
+  label {
+    font-size: 0.75rem !important;
+    margin-bottom: 0.375rem !important;
+    display: block;
+    word-break: break-word;
+  }
+
+  /* Tableaux sur mobile : défilement horizontal garanti sans écrasement */
+  .admin-table {
+    display: block !important;
+    min-width: 600px; /* Assure que les colonnes conservent leur lisibilité */
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.625rem 0.5rem !important;
+  }
+
+  /* Vue cartes alternatives pour tableaux étroits */
+  .admin-mobile-card-row {
+    display: flex;
+    flex-direction: column;
+    padding: 0.875rem;
+    border-bottom: 1px solid #f5f5f4;
+    gap: 0.5rem;
+  }
+
+  /* Cartes KPI du dashboard : 1 ou 2 colonnes bien compactes */
+  .admin-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+
+  .admin-kpi-card {
+    padding: 0.75rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .admin-kpi-value {
+    font-size: 1.25rem !important;
+  }
+
+  /* Barre d'action basse collante (ex: Paramètres) */
+  .admin-sticky-save-bar {
+    position: sticky;
+    bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 25;
+  }
+
+  .admin-sticky-save-bar button {
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+
+  /* Modales : hauteur maximale stricte pour ne jamais dépasser de l'écran */
+  .admin-modal-card {
+    max-height: 88vh !important;
+    max-height: 88dvh !important;
+    margin: 0.25rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .admin-modal-header {
+    padding: 0.75rem 1rem !important;
+  }
+
+  .admin-modal-header h3 {
+    font-size: 1rem !important;
+  }
+
+  .admin-modal-body {
+    padding: 0.875rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .admin-modal-footer {
+    padding: 0.75rem !important;
+  }
+
+  /* Galerie de photos dans le modal produit */
+  .admin-product-thumbs-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.375rem !important;
+  }
+
+  /* Menu tiroir mobile plein écran sans conflit d'affichage */
+  .admin-mobile-drawer {
+    position: fixed;
+    inset: 0;
+    top: 57px;
+    background-color: #0c0a09;
+    z-index: 40;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}

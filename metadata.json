@@ -1,0 +1,6 @@
+{
+  "name": "ORTANCE — Boutique & Catalogue",
+  "description": "Application web e-commerce et vitrine d'articles de mode pour la boutique ORTANCE. Catalogue par catégories, mise en avant, commande personnalisée par WhatsApp et espace administration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
