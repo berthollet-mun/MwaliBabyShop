@@ -6,7 +6,6 @@ import { ToastProvider } from './context/ToastContext';
 import { AddressRibbon } from './components/layout/AddressRibbon';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { FloatingWhatsApp } from './components/layout/FloatingWhatsApp';
 import { ScrollToTopButton } from './components/layout/ScrollToTopButton';
 import { SearchModal } from './components/common/SearchModal';
 import { HomePage } from './components/pages/HomePage';
@@ -154,10 +153,7 @@ function AppContent() {
       {/* 4. Luxury Footer */}
       <Footer navigate={navigate} />
 
-      {/* 5. Floating WhatsApp Button (Fixed bottom right) */}
-      <FloatingWhatsApp />
-
-      {/* 6. Discreet Luxury Scroll To Top Button */}
+      {/* 5. Discreet Luxury Scroll To Top Button */}
       <ScrollToTopButton />
 
       {/* 7. Instant Catalog Search Modal */}

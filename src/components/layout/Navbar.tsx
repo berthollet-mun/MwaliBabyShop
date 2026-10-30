@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, Menu, X, MessageCircle, ShieldCheck, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Search, Menu, X, ShieldCheck, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSearch }) => {
-  const { categories, settings, generateWhatsAppUrl, recordWhatsAppClick } = useStore();
+  const { categories, settings } = useStore();
   const { isAuthenticated, currentUser, role } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -70,11 +70,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
     navigate(path);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleWhatsAppDirect = () => {
-    recordWhatsAppClick('header');
-    window.open(generateWhatsAppUrl(), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -205,18 +200,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
               <kbd className="hidden 2xl:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-stone-300 rounded text-stone-400 font-mono">
                 ⌘K
               </kbd>
-            </button>
-
-            {/* Direct WhatsApp CTA */}
-            <button
-              type="button"
-              onClick={handleWhatsAppDirect}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold tracking-wide shadow-sm hover:shadow transition-all duration-200 active:scale-95 shrink-0 whitespace-nowrap"
-              title="Discuter ou demander le prix via WhatsApp"
-            >
-              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white/20 shrink-0" />
-              <span className="hidden 2xl:inline">Discuter sur WhatsApp</span>
-              <span className="2xl:hidden hidden min-[360px]:inline">WhatsApp</span>
             </button>
 
             {/* Admin Portal Button */}
