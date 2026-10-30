@@ -56,11 +56,11 @@ export const SettingsManager: React.FC = () => {
                 required
                 value={form.whatsappNumber}
                 onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
-                placeholder="243977807994"
+                placeholder="243822262471"
                 className="admin-input font-mono"
               />
               <p className="text-[10px] text-stone-500 mt-1">
-                Utilisé pour le lien direct <code className="bg-stone-100 px-1 py-0.5 rounded">wa.me/243977807994</code>.
+                Utilisé pour le lien direct <code className="bg-stone-100 px-1 py-0.5 rounded">wa.me/243822262471</code>.
               </p>
             </div>
 
@@ -73,11 +73,11 @@ export const SettingsManager: React.FC = () => {
                 required
                 value={form.whatsappDisplay}
                 onChange={(e) => setForm({ ...form, whatsappDisplay: e.target.value })}
-                placeholder="+243 977 807 994"
+                placeholder="+243 822 262 471"
                 className="admin-input"
               />
               <p className="text-[10px] text-stone-500 mt-1">
-                Format élégant et lisible affiché sur le bandeau et le catalogue.
+                Format élégant et lisible affiché sur le bandeau et le catalogue (ex : +243 822 262 471 ou 0822262471).
               </p>
             </div>
 

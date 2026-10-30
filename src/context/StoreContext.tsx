@@ -142,8 +142,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (saved) {
         const parsed = JSON.parse(saved) as SiteSettings;
+        const isOldPhone = !parsed.whatsappNumber || parsed.whatsappNumber === '243977807994';
+        const isOldDisplay = !parsed.whatsappDisplay || parsed.whatsappDisplay === '+243 977 807 994';
         return {
           ...parsed,
+          whatsappNumber: isOldPhone ? '243822262471' : parsed.whatsappNumber,
+          whatsappDisplay: isOldDisplay ? '+243 822 262 471' : parsed.whatsappDisplay,
+          phone: parsed.phone === '+243 812 529 361' || !parsed.phone ? '+243 822 262 471' : parsed.phone,
           tagline: sanitizeLegacyAgeText(parsed.tagline || ''),
           aboutText: sanitizeLegacyAgeText(parsed.aboutText || ''),
           heroSubheadline: sanitizeLegacyAgeText(parsed.heroSubheadline || ''),
@@ -415,7 +420,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const generateWhatsAppUrl = (product?: Product, customNote?: string): string => {
     // International WhatsApp number format: no + or spaces, just digits
-    const cleanNumber = (settings.whatsappNumber || '243977807994').replace(/\D/g, '');
+    const cleanNumber = (settings.whatsappNumber || '243822262471').replace(/\D/g, '');
     const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://mwalibabyshop.com';
     const storeAddress = settings.address || 'Route pavée, derrière la Mairie de Goma, 4ème entrée à droite, avant Hôtel La Versailles, Goma';
 
@@ -452,7 +457,7 @@ Merci de m'orienter !`;
   };
 
   const generateOrderWhatsAppUrl = (product: Product): string => {
-    const cleanNumber = (settings.whatsappNumber || '243977807994').replace(/\D/g, '');
+    const cleanNumber = (settings.whatsappNumber || '243822262471').replace(/\D/g, '');
     const priceText = product.price ? ` — Prix : ${product.price}` : '';
     const refText = product.reference ? ` (Réf: ${product.reference})` : '';
     const textMessage = `Bonjour MWALI Baby Shop,\n\nJe souhaite COMMANDER le produit suivant :\n• Article : ${product.name}${refText}${priceText}\n\nMerci de me confirmer la disponibilité et les modalités de livraison à Goma.`;
@@ -460,7 +465,7 @@ Merci de m'orienter !`;
   };
 
   const generateInquiryWhatsAppUrl = (product: Product): string => {
-    const cleanNumber = (settings.whatsappNumber || '243977807994').replace(/\D/g, '');
+    const cleanNumber = (settings.whatsappNumber || '243822262471').replace(/\D/g, '');
     const refText = product.reference ? ` (Réf: ${product.reference})` : '';
     const textMessage = `Bonjour MWALI Baby Shop,\n\nJe souhaite discuter au sujet de cet article :\n• Article : ${product.name}${refText}\n\nPouvez-vous me donner plus de précisions ? Merci !`;
     return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(textMessage)}`;
