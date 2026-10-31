@@ -119,6 +119,44 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
+
+          {/* Quick-fill helper for convenience */}
+          <div className="pt-4 border-t border-stone-800/80 space-y-2.5">
+            <p className="text-[11px] uppercase tracking-wider text-stone-400 font-semibold text-center">
+              Comptes d'accès rapide (Cliquez pour remplir)
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('admin@mwalibabyshop.com');
+                  setPassword('admin123');
+                }}
+                className="p-2.5 rounded-xl bg-stone-950/70 hover:bg-stone-800 border border-stone-800 text-left transition-all group"
+              >
+                <div className="text-[11px] font-bold text-amber-400 group-hover:text-amber-300">
+                  👑 Administrateur
+                </div>
+                <div className="text-[10px] text-stone-300 truncate">admin@mwalibabyshop.com</div>
+                <div className="text-[10px] text-stone-500">Mdp: <span className="text-stone-400 font-mono">admin123</span></div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('responsable@mwalibabyshop.com');
+                  setPassword('responsable123');
+                }}
+                className="p-2.5 rounded-xl bg-stone-950/70 hover:bg-stone-800 border border-stone-800 text-left transition-all group"
+              >
+                <div className="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300">
+                  📦 Responsable Catalogue
+                </div>
+                <div className="text-[10px] text-stone-300 truncate">responsable@mwalibabyshop.com</div>
+                <div className="text-[10px] text-stone-500">Mdp: <span className="text-stone-400 font-mono">responsable123</span></div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

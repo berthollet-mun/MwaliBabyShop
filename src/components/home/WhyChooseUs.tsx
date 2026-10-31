@@ -24,7 +24,7 @@ export const WhyChooseUs: React.FC = () => {
     {
       icon: MessageCircle,
       title: 'Conseil Direct sur WhatsApp',
-      description: 'Échangez directement avec notre équipe au +243 822 262 471 (0822262471) pour vérifier les tailles, connaître les prix et composer votre commande.',
+      description: `Échangez directement avec notre équipe au ${settings.whatsappDisplay || '+243 971 171 975'} (0971171975) pour vérifier les tailles, connaître les prix et composer votre commande.`,
     },
     {
       icon: Truck,

@@ -7,8 +7,8 @@
 
 export const WHATSAPP_CONFIG = {
   // Numéro WhatsApp boutique (format international sans '+' ni espaces)
-  // Numéro actuel : +243 822 262 471 (0822262471)
-  phoneNumber: '243822262471',
+  // Numéro officiel : +243 971 171 975 (0971171975)
+  phoneNumber: '243971171975',
 
   // Modèle de message pré-rempli pour la discussion du prix
   // {{NOM_PRODUIT}} est automatiquement remplacé par le nom du produit sélectionné

@@ -73,8 +73,8 @@ export interface SiteSettings {
   address: string;
   city: string;
   country: string;
-  whatsappNumber: string; // e.g. "243822262471"
-  whatsappDisplay: string; // e.g. "+243 822 262 471"
+  whatsappNumber: string; // e.g. "243971171975"
+  whatsappDisplay: string; // e.g. "+243 971 171 975"
   email: string;
   phone: string;
   openingHours: string;
