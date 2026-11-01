@@ -80,15 +80,15 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
               <label className="block text-xs font-semibold text-stone-300 mb-1">
                 Adresse email
               </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <div className="admin-login-input-wrap relative">
+                <Mail className="admin-login-input-icon" aria-hidden="true" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="exemple@gmail.com"
-                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
+                  className="admin-input admin-login-input w-full bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
                 />
               </div>
             </div>
@@ -97,15 +97,15 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
               <label className="block text-xs font-semibold text-stone-300 mb-1">
                 Mot de passe
               </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <div className="admin-login-input-wrap relative">
+                <Lock className="admin-login-input-icon" aria-hidden="true" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
+                  className="admin-input admin-login-input w-full bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
                 />
               </div>
             </div>

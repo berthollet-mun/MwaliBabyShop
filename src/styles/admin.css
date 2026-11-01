@@ -468,3 +468,27 @@
     justify-content: space-between;
   }
 }
+
+/* Connexion admin : zone fixe réservée aux pictogrammes. Ces règles sont
+   placées après les adaptations mobiles afin que leur padding ne soit jamais
+   écrasé par la normalisation générale des champs. */
+.admin-login-input-wrap {
+  position: relative;
+}
+
+.admin-login-input-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  color: #78716c;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.admin-input.admin-login-input {
+  min-height: 48px !important;
+  padding: 0.75rem 1rem 0.75rem 2.75rem !important;
+}

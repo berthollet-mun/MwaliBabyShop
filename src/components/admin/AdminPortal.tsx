@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Package,
   Layers,
-  Image as ImageIcon,
   Users,
   Settings,
   LogOut,
@@ -21,7 +20,6 @@ import { UserRole } from '../../types';
 import { DashboardView } from './DashboardView';
 import { ProductsManager } from './ProductsManager';
 import { CategoriesManager } from './CategoriesManager';
-import { BannersManager } from './BannersManager';
 import { UsersManager } from './UsersManager';
 import { SettingsManager } from './SettingsManager';
 
@@ -47,7 +45,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
     { id: 'dashboard', label: 'Tableau de Bord', icon: LayoutDashboard },
     { id: 'products', label: 'Catalogue Articles', icon: Package },
     { id: 'categories', label: 'Catégories', icon: Layers },
-    { id: 'banners', label: 'Bannières & Carrousel', icon: ImageIcon },
     ...(isIT ? [{ id: 'users', label: 'Utilisateurs & Rôles', icon: Users }] : []),
     { id: 'settings', label: 'Paramètres', icon: Settings },
     ...(isIT ? [{ id: 'logs', label: 'Journal d’Audit & Logs', icon: Activity }] : []),
@@ -247,7 +244,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
         {activeTab === 'dashboard' && <DashboardView onNavigateTab={setActiveTab} />}
         {activeTab === 'products' && <ProductsManager />}
         {activeTab === 'categories' && <CategoriesManager />}
-        {activeTab === 'banners' && <BannersManager />}
         {activeTab === 'users' && <UsersManager />}
         {activeTab === 'settings' && <SettingsManager />}
 
