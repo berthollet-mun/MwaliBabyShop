@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, Menu, X, ShieldCheck, ChevronRight, ChevronLeft } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useStore } from '../../context/StoreContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -12,6 +13,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSearch }) => {
   const { categories, settings } = useStore();
   const { isAuthenticated, currentUser, role } = useAuth();
+  const shouldReduceMotion = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Scroll rail controls for categories on desktop
@@ -73,7 +75,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 transition-all">
+    <motion.header
+      initial={shouldReduceMotion ? false : { opacity: 0, y: -42 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.12, duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+      className="mwali-navbar sticky top-0 z-40 border-b border-stone-200 bg-white/90 backdrop-blur-xl transition-all"
+    >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-3 xl:gap-4">
           
@@ -222,8 +229,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
       </div>
 
       {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top duration-200 shadow-xl max-h-[80vh] overflow-y-auto">
+      <AnimatePresence>
+        {mobileMenuOpen && (
+        <motion.div
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0, y: -18 }}
+          animate={{ opacity: 1, height: 'auto', y: 0 }}
+          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0, y: -12 }}
+          transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+          className="max-h-[80vh] space-y-3 overflow-y-auto border-t border-stone-200 bg-white px-4 pb-6 pt-3 shadow-xl lg:hidden"
+        >
           <div className="text-[11px] uppercase tracking-widest text-stone-400 font-bold px-2">
             Catalogue & Catégories
           </div>
@@ -274,8 +288,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
               )}
             </button>
           </div>
-        </div>
-      )}
-    </header>
+        </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 };

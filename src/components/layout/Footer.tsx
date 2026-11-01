@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapPin, Phone, MessageCircle, ShieldCheck } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useStore } from '../../context/StoreContext';
 
 interface FooterProps {
@@ -8,13 +9,22 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ navigate }) => {
   const { settings, categories, generateWhatsAppUrl, recordWhatsAppClick } = useStore();
+  const shouldReduceMotion = useReducedMotion();
 
   const handleWhatsApp = () => {
     recordWhatsAppClick('header');
   };
 
   return (
-    <footer className="bg-[#0F0F0F] text-stone-300 pt-12 pb-10 border-t border-stone-800">
+    <motion.footer
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 64 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+      className="mwali-footer relative overflow-hidden border-t border-stone-800 bg-[#0F0F0F] pb-10 pt-12 text-stone-300"
+    >
+      <div className="mwali-footer-aurora pointer-events-none absolute -left-16 -top-40 h-80 w-80 rounded-full bg-[#5a237a]/30 blur-3xl" aria-hidden="true" />
+      <div className="mwali-footer-aurora mwali-footer-aurora-delay pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-[#e83c78]/20 blur-3xl" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10 border-b border-stone-800">
           {/* Col 1: Brand & WhatsApp */}
@@ -101,6 +111,6 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
           <span className="text-stone-500 text-[11px]">Goma, Nord-Kivu, RDC</span>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 };

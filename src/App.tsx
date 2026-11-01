@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring } from 'motion/react';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -26,6 +26,13 @@ const AppFallback = () => (
 function AppContent() {
   const { isAuthenticated, isCheckingSession } = useAuth();
   const { apiError, refreshStorefront } = useStore();
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 28,
+    mass: 0.35,
+  });
   const [currentPath, setCurrentPath] = useState<string>(() => {
     // Initial path from hash or pathname
     const hash = window.location.hash.replace(/^#/, '');
@@ -141,6 +148,11 @@ function AppContent() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fffafc] text-[#261d2c] font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#f8a9c4] selection:text-[#2d1148]">
+      <motion.div
+        className="mwali-scroll-progress"
+        style={{ scaleX: shouldReduceMotion ? scrollYProgress : smoothScrollProgress }}
+        aria-hidden="true"
+      />
       {/* 1. Address & Contact Ribbon (Ultra visible at the very top) */}
       <AddressRibbon />
 
@@ -171,10 +183,10 @@ function AppContent() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPath}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 24, filter: 'blur(10px)', scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -16, filter: 'blur(7px)', scale: 1.008 }}
+            transition={{ duration: shouldReduceMotion ? 0.12 : 0.58, ease: [0.16, 1, 0.3, 1] }}
             className="w-full flex-1 flex flex-col"
           >
             {renderPublicPage()}

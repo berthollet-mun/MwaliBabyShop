@@ -83,6 +83,194 @@ body {
 }
 
 /* ==========================================================================
+   MWALI Motion System — cinematic, tactile and mobile-safe
+   ========================================================================== */
+@keyframes mwali-aurora-one {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  35% { transform: translate3d(8vw, 2rem, 0) scale(1.16); }
+  70% { transform: translate3d(3vw, -1.5rem, 0) scale(0.94); }
+}
+
+@keyframes mwali-aurora-two {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  45% { transform: translate3d(-10vw, -2rem, 0) scale(1.2); }
+  75% { transform: translate3d(-4vw, 1rem, 0) scale(0.9); }
+}
+
+@keyframes mwali-grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 48px 48px; }
+}
+
+@keyframes mwali-title-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes mwali-spark-pulse {
+  0%, 100% { transform: rotate(-8deg) scale(0.85); filter: drop-shadow(0 0 0 rgba(232, 60, 120, 0)); }
+  50% { transform: rotate(12deg) scale(1.2); filter: drop-shadow(0 0 8px rgba(232, 60, 120, 0.72)); }
+}
+
+@keyframes mwali-card-sheen {
+  0%, 55% { transform: translateX(-240%) rotate(12deg); opacity: 0; }
+  70% { opacity: 0.75; }
+  100% { transform: translateX(640%) rotate(12deg); opacity: 0; }
+}
+
+@keyframes mwali-ribbon-sweep {
+  0% { transform: translateX(-150%); }
+  100% { transform: translateX(440%); }
+}
+
+@keyframes mwali-footer-breathe {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate3d(2rem, -1rem, 0) scale(1.16); opacity: 1; }
+}
+
+.mwali-scroll-progress {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #5a237a 0%, #e83c78 55%, #ffbd3f 100%);
+  box-shadow: 0 0 14px rgba(232, 60, 120, 0.72);
+}
+
+.mwali-catalog-stage {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 13% 18%, rgba(232, 60, 120, 0.11), transparent 30%),
+    radial-gradient(circle at 88% 72%, rgba(90, 35, 122, 0.12), transparent 34%),
+    linear-gradient(135deg, #fff 0%, #fff8fb 46%, #fbf5ff 100%);
+}
+
+.mwali-grid-drift {
+  background-image:
+    linear-gradient(rgba(90, 35, 122, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 35, 122, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 82%, transparent);
+  animation: mwali-grid-drift 18s linear infinite;
+}
+
+.mwali-orb {
+  width: clamp(16rem, 34vw, 34rem);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.24;
+  will-change: transform;
+}
+
+.mwali-orb-one {
+  top: -9rem;
+  left: -8rem;
+  background: #ff7cac;
+  animation: mwali-aurora-one 12s ease-in-out infinite;
+}
+
+.mwali-orb-two {
+  right: -10rem;
+  bottom: -8rem;
+  background: #8b5cf6;
+  animation: mwali-aurora-two 14s ease-in-out infinite;
+}
+
+.mwali-title-shine {
+  color: transparent;
+  background: linear-gradient(100deg, #2d1148 5%, #e83c78 42%, #ff9d3d 58%, #5a237a 94%);
+  background-size: 240% 240%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: mwali-title-flow 5s ease-in-out infinite;
+}
+
+.mwali-spark {
+  animation: mwali-spark-pulse 2.4s ease-in-out infinite;
+}
+
+.mwali-category-card {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 20px 55px -34px rgba(45, 17, 72, 0.68),
+    0 5px 18px -12px rgba(45, 17, 72, 0.28);
+  will-change: transform;
+}
+
+.mwali-category-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  border: 1px solid rgba(232, 60, 120, 0);
+  box-shadow: 0 0 0 rgba(232, 60, 120, 0);
+  pointer-events: none;
+  transition: border-color 400ms ease, box-shadow 400ms ease;
+}
+
+.mwali-category-card:hover::after,
+.mwali-category-card:focus-visible::after {
+  border-color: rgba(232, 60, 120, 0.48);
+  box-shadow: 0 22px 60px -30px rgba(232, 60, 120, 0.78);
+}
+
+.mwali-category-card:hover .mwali-card-sheen,
+.mwali-category-card:focus-visible .mwali-card-sheen {
+  animation: mwali-card-sheen 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mwali-navbar::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(72vw, 62rem);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(232, 60, 120, 0.45), transparent);
+}
+
+.mwali-ribbon-light {
+  animation: mwali-ribbon-sweep 8s ease-in-out infinite;
+}
+
+.mwali-footer-aurora {
+  animation: mwali-footer-breathe 9s ease-in-out infinite;
+}
+
+.mwali-footer-aurora-delay {
+  animation-delay: -4.5s;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .mwali-category-card {
+    box-shadow: 0 14px 34px -24px rgba(45, 17, 72, 0.58);
+  }
+
+  .mwali-category-card:active::after {
+    border-color: rgba(232, 60, 120, 0.62);
+    box-shadow: 0 0 28px rgba(232, 60, 120, 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mwali-grid-drift,
+  .mwali-orb,
+  .mwali-title-shine,
+  .mwali-spark,
+  .mwali-ribbon-light,
+  .mwali-footer-aurora {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
    MEDIA QUERY 1 : Très Petits Écrans & Smartphones Compacts (<= 380px)
    Ex: iPhone SE, Galaxy Z Flip plié, petits téléphones Android
    ========================================================================== */
