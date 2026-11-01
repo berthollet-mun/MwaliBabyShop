@@ -4,8 +4,9 @@ services:
     runtime: node
     plan: free
     buildCommand: npm ci --include=dev && npm run build:server
-    preDeployCommand: npm run db:migrate && npm run db:seed
-    startCommand: npm start
+    # Free Render services do not support pre-deploy commands. The migration
+    # and seed scripts are idempotent, so they safely run before every start.
+    startCommand: npm run db:migrate && npm run db:seed && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
