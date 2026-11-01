@@ -11,7 +11,7 @@
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
-  background-color: #f8f9fa;
+  background-color: var(--mwali-surface);
   width: 100%;
   overflow-x: hidden;
 }
@@ -29,8 +29,8 @@
 .admin-card {
   background-color: #ffffff;
   border-radius: 1.5rem;
-  border: 1px solid rgba(231, 229, 228, 0.8);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--mwali-border);
+  box-shadow: var(--mwali-shadow);
   overflow: hidden;
   word-break: break-word;
 }
@@ -154,11 +154,11 @@
 }
 
 .admin-btn-primary {
-  background-color: #1c1917;
+  background-color: var(--mwali-purple);
   color: #ffffff;
 }
 .admin-btn-primary:hover {
-  background-color: #000000;
+  background-color: var(--mwali-purple-deep);
 }
 
 .admin-btn-secondary {

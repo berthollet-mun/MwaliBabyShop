@@ -8,10 +8,11 @@ import { User, Role } from '../../types';
 export const UsersManager: React.FC = () => {
   const { currentUser, role } = useAuth();
   const { users, addUser, updateUser, deleteUser } = useStore();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -20,8 +21,8 @@ export const UsersManager: React.FC = () => {
     password: '',
   });
 
-  // Strict check: only INFORMATICIEN can access users management
-  if (role !== 'INFORMATICIEN') {
+  // Strict check: only ADMIN can access users management
+  if (role !== 'ADMIN') {
     return (
       <div className="bg-white p-8 rounded-3xl border border-stone-200 text-center space-y-4 max-w-lg mx-auto my-12">
         <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
@@ -29,7 +30,7 @@ export const UsersManager: React.FC = () => {
         </div>
         <h3 className="text-lg font-bold text-stone-900">Accès Restreint</h3>
         <p className="text-xs text-stone-600 leading-relaxed">
-          Conformément au cahier des charges de MWALI Baby Shop, la gestion des comptes utilisateurs, des mots de passe et des permissions système est strictement réservée à l'<strong>Ingénieur Informaticien</strong>.
+          Conformément au cahier des charges de MWALI Baby Shop, la gestion des comptes utilisateurs, des mots de passe et des permissions système est strictement réservée à l'<strong>Administrateur</strong>.
         </p>
       </div>
     );
@@ -57,24 +58,33 @@ export const UsersManager: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateUser(editingId, {
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-      });
-      showSuccess('Compte utilisateur modifié', `L'accès pour ${formData.name} a été mis à jour.`);
-    } else {
-      addUser({
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-      });
-      showSuccess('Compte utilisateur créé', `L'accès pour ${formData.name} est activé.`);
+    setIsSaving(true);
+    try {
+      if (editingId) {
+        await updateUser(editingId, {
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          ...(formData.password ? { password: formData.password } : {}),
+        });
+        showSuccess('Compte utilisateur modifié', `L'accès pour ${formData.name} a été mis à jour.`);
+      } else {
+        await addUser({
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          password: formData.password,
+        });
+        showSuccess('Compte utilisateur créé', `L'accès pour ${formData.name} est activé.`);
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      showError('Enregistrement impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+    } finally {
+      setIsSaving(false);
     }
-    setIsFormOpen(false);
   };
 
   return (
@@ -84,13 +94,13 @@ export const UsersManager: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700 mb-1">
             <Lock className="w-3.5 h-3.5" />
-            <span>Zone Ingénieur Informaticien</span>
+            <span>Zone Administrateur</span>
           </div>
           <h2 className="font-['Playfair_Display',serif] text-lg sm:text-xl font-bold text-stone-900">
             Gestion des Comptes & Rôles d'Accès
           </h2>
           <p className="text-xs text-stone-500 mt-0.5">
-            Deux rôles autorisés : <strong>Responsable</strong> (catalogue) et <strong>Ingénieur Informaticien</strong> (accès total).
+            Deux rôles autorisés : <strong>Responsable</strong> (catalogue) et <strong>Administrateur</strong> (accès total).
           </p>
         </div>
 
@@ -118,7 +128,7 @@ export const UsersManager: React.FC = () => {
           <tbody className="divide-y divide-stone-100 text-stone-800">
             {users.map((u: User) => {
               const isCurrent = u.id === currentUser?.id;
-              const isIT = u.role === 'INFORMATICIEN';
+              const isIT = u.role === 'ADMIN';
               return (
                 <tr key={u.id} className="hover:bg-stone-50/70">
                   <td className="py-3 px-4">
@@ -152,7 +162,7 @@ export const UsersManager: React.FC = () => {
                       {isIT ? (
                         <>
                           <ShieldCheck className="w-3.5 h-3.5 text-purple-700" />
-                          <span>Ingénieur Informaticien (Total)</span>
+                          <span>Administrateur (Total)</span>
                         </>
                       ) : (
                         <>
@@ -179,10 +189,14 @@ export const UsersManager: React.FC = () => {
                       </button>
                       {!isCurrent && (
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             if (confirm(`Supprimer l'accès pour ${u.name} ?`)) {
-                              deleteUser(u.id);
-                              showSuccess('Accès supprimé', `Le compte de ${u.name} a été révoqué.`);
+                              try {
+                                await deleteUser(u.id);
+                                showSuccess('Accès supprimé', `Le compte de ${u.name} a été révoqué.`);
+                              } catch (error) {
+                                showError('Suppression impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                              }
                             }
                           }}
                           className="p-1.5 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors"
@@ -263,8 +277,8 @@ export const UsersManager: React.FC = () => {
                     <option value="RESPONSABLE">
                       Responsable — Catalogue & Contenus
                     </option>
-                    <option value="INFORMATICIEN">
-                      Ingénieur Informaticien — Accès total
+                    <option value="ADMIN">
+                      Administrateur — Accès total
                     </option>
                   </select>
                 </div>
@@ -277,12 +291,14 @@ export const UsersManager: React.FC = () => {
                     <input
                       type="password"
                       value={formData.password}
+                      required
+                      minLength={12}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       placeholder="••••••••"
                       className="admin-input"
                     />
                     <p className="text-[10px] text-stone-500 mt-1">
-                      Le collaborateur pourra le modifier lors de sa première connexion.
+                      À transmettre par un canal sécurisé; un administrateur pourra ensuite le renouveler.
                     </p>
                   </div>
                 )}
@@ -298,9 +314,11 @@ export const UsersManager: React.FC = () => {
                 </button>
                 <button
                   type="submit"
+                  disabled={isSaving}
+                  aria-busy={isSaving}
                   className="admin-btn admin-btn-primary"
                 >
-                  Enregistrer
+                  {isSaving ? 'Enregistrement…' : 'Enregistrer'}
                 </button>
               </div>
             </form>

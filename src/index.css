@@ -1,6 +1,55 @@
 @import "tailwindcss";
 @import "./styles/admin.css";
 
+:root {
+  --mwali-pink: #e83c78;
+  --mwali-pink-dark: #c92561;
+  --mwali-pink-soft: #fff0f5;
+  --mwali-purple: #5a237a;
+  --mwali-purple-deep: #2d1148;
+  --mwali-ink: #261d2c;
+  --mwali-muted: #6f6475;
+  --mwali-surface: #fffafc;
+  --mwali-border: #eedfe7;
+  background-color: var(--mwali-surface);
+  --mwali-success: #087f5b;
+  --mwali-warning: #b86800;
+  --mwali-danger: #c6284f;
+  --mwali-radius-sm: 0.75rem;
+  --mwali-radius-lg: 1.5rem;
+  --mwali-shadow: 0 16px 40px -24px rgba(73, 26, 91, 0.38);
+}
+
+body {
+  background: var(--mwali-surface);
+  color: var(--mwali-ink);
+}
+
+::selection {
+  background: #f8a9c4;
+  color: var(--mwali-purple-deep);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(232, 60, 120, 0.55);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ==========================================================================
    MWALI Baby Shop — Système de Responsivité Globale & Media Queries
    Adaptation optimisée pour chaque type d'écran (Mobile, Tablette, Desktop, 4K)

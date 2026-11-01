@@ -38,7 +38,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
   return (
     <section
       aria-label="Carrousel des collections en vedette"
-      className="relative w-full overflow-hidden bg-stone-900 select-none"
+      className="relative w-full overflow-hidden bg-[#2d1148] select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -65,7 +65,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
             <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
               <div className="max-w-2xl space-y-3 sm:space-y-5 text-white">
                 {banner.badge && (
-                  <span className="inline-flex items-center px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-amber-500/95 text-stone-950 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] shadow-lg">
+                  <span className="inline-flex items-center px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-[#e83c78] text-white text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] shadow-lg">
                     {banner.badge}
                   </span>
                 )}
@@ -130,7 +130,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-2 transition-all rounded-full ${
-                  idx === currentIndex ? 'w-8 bg-amber-400' : 'w-2 bg-white/50 hover:bg-white/80'
+                  idx === currentIndex ? 'w-8 bg-[#e83c78]' : 'w-2 bg-white/50 hover:bg-white/80'
                 }`}
                 aria-label={`Aller à la diapositive ${idx + 1}`}
               />

@@ -63,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
           {/* Col 3: Discreet Physical Address & Admin */}
           <div className="space-y-3">
             <h4 className="text-xs uppercase tracking-[0.2em] font-bold text-white flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-amber-400" />
+              <MapPin className="w-3.5 h-3.5 text-[#ff8fb5]" />
               Adresse & Retrait
             </h4>
             <p className="text-stone-300 text-xs leading-relaxed">
@@ -76,7 +76,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
                 href={`tel:${settings.phone}`}
                 className="text-stone-400 hover:text-white text-xs flex items-center gap-1"
               >
-                <Phone className="w-3 h-3 text-amber-400" />
+                <Phone className="w-3 h-3 text-[#ff8fb5]" />
                 <span>{settings.phone}</span>
               </a>
             )}

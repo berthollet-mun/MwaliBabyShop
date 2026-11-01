@@ -1,8 +1,16 @@
 node_modules/
 build/
 dist/
+server-dist/
 coverage/
 .DS_Store
 *.log
 .env*
 !.env.example
+.vercel/
+.render/
+uploads/
+*.pem
+*.key
+*.crt
+*.local

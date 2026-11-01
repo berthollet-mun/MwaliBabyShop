@@ -10,11 +10,11 @@ export const AddressRibbon: React.FC = () => {
   };
 
   return (
-    <aside aria-label="Informations boutique" className="bg-[#111111] text-stone-200 text-xs py-1.5 sm:py-2 px-3 sm:px-4 border-b border-stone-800 tracking-wide overflow-hidden">
+    <aside aria-label="Informations boutique" className="bg-[#2d1148] text-stone-200 text-xs py-1.5 sm:py-2 px-3 sm:px-4 border-b border-white/10 tracking-wide overflow-hidden">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
         {/* Physical store location */}
         <div className="flex items-center gap-1.5 min-w-0">
-          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <MapPin className="w-3.5 h-3.5 text-[#ff8fb5] shrink-0" />
           <span className="hidden sm:inline font-medium text-stone-100 shrink-0">Boutique physique :</span>
           <span className="truncate text-stone-300 text-[11px] sm:text-xs">
             {settings.city} — {settings.address}

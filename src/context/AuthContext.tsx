@@ -1,14 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Role } from '../types';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { Role, User } from '../types';
+import { api, ApiError } from '../lib/api';
 import { useStore } from './StoreContext';
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
+  isCheckingSession: boolean;
   role: Role | null;
-  login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
-  loginAsDemo: (role: Role) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
   canManageUsers: boolean;
   canManageCatalogue: boolean;
   canViewSystemLogs: boolean;
@@ -17,84 +18,66 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { users, addLog } = useStore();
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    try {
-      const saved = localStorage.getItem('ortance_auth_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  const { refreshAdminData } = useStore();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
 
   useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('ortance_auth_user', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('ortance_auth_user');
-    }
-  }, [currentUser]);
-
-  const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
-    // Normalization
-    const cleanEmail = email.trim().toLowerCase();
-    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
-
-    if (!user) {
-      return { success: false, error: 'Identifiants invalides. Vérifiez votre adresse email.' };
-    }
-
-    // Passwords accepted for demo: 'responsable123', 'admin123', or any password if test
-    if (pass.length < 4) {
-      return { success: false, error: 'Le mot de passe doit contenir au moins 4 caractères.' };
-    }
-
-    const updatedUser = {
-      ...user,
-      lastLogin: new Date().toISOString(),
+    let active = true;
+    const restoreSession = async () => {
+      try {
+        const result = await api.get<{ user: User }>('/auth/me');
+        if (!active) return;
+        setCurrentUser(result.user);
+        await refreshAdminData();
+      } catch {
+        if (active) setCurrentUser(null);
+      } finally {
+        if (active) setIsCheckingSession(false);
+      }
     };
+    void restoreSession();
+    return () => { active = false; };
+  }, [refreshAdminData]);
 
-    setCurrentUser(updatedUser);
-    addLog('Connexion réussie', 'auth', `Connexion de l'utilisateur ${user.name} (${user.role})`);
-    return { success: true };
-  };
-
-  const loginAsDemo = (targetRole: Role) => {
-    const matched = users.find(u => u.role === targetRole) || users[0];
-    if (matched) {
-      setCurrentUser(matched);
-      addLog('Connexion démo', 'auth', `Connexion rapide en tant que ${matched.role} (${matched.name})`);
+  const login = async (email: string, password: string) => {
+    try {
+      const result = await api.post<{ user: User }>('/auth/login', { email: email.trim(), password });
+      setCurrentUser(result.user);
+      await refreshAdminData();
+      return { success: true };
+    } catch (error) {
+      const message = error instanceof ApiError ? error.message : 'Connexion impossible. Vérifiez le serveur et réessayez.';
+      return { success: false, error: message };
     }
   };
 
-  const logout = () => {
-    if (currentUser) {
-      addLog('Déconnexion', 'auth', `Déconnexion de ${currentUser.name}`);
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      setCurrentUser(null);
     }
-    setCurrentUser(null);
-    localStorage.removeItem('ortance_auth_user');
   };
 
   const role = currentUser?.role || null;
-  const isAuthenticated = !!currentUser;
-  const canManageUsers = role === 'INFORMATICIEN';
-  const canManageCatalogue = role === 'RESPONSABLE' || role === 'INFORMATICIEN';
-  const canViewSystemLogs = role === 'INFORMATICIEN';
+  const isAuthenticated = Boolean(currentUser);
+  const canManageUsers = role === 'ADMIN';
+  const canManageCatalogue = role === 'ADMIN' || role === 'RESPONSABLE';
+  const canViewSystemLogs = role === 'ADMIN';
 
   return (
-    <AuthContext.Provider
-      value={{
-        currentUser,
-        isAuthenticated,
-        role,
-        login,
-        loginAsDemo,
-        logout,
-        canManageUsers,
-        canManageCatalogue,
-        canViewSystemLogs,
-      }}
-    >
+    <AuthContext.Provider value={{
+      currentUser,
+      isAuthenticated,
+      isCheckingSession,
+      role,
+      login,
+      logout,
+      canManageUsers,
+      canManageCatalogue,
+      canViewSystemLogs,
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -102,8 +85,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };

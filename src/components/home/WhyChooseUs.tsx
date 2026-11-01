@@ -42,7 +42,7 @@ export const WhyChooseUs: React.FC = () => {
     <section className="py-16 sm:py-24 bg-white border-b border-stone-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-amber-700 mb-3">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-[#e83c78] mb-3">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Engagement & Excellence</span>
           </div>
@@ -63,7 +63,7 @@ export const WhyChooseUs: React.FC = () => {
                 className="p-8 rounded-2xl bg-[#FAFAFA] border border-stone-200/80 hover:border-stone-300 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-xl bg-stone-900 text-amber-400 flex items-center justify-center shadow-sm">
+                  <div className="w-12 h-12 rounded-xl bg-stone-900 text-pink-400 flex items-center justify-center shadow-sm">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-['Playfair_Display',serif] text-lg font-bold text-stone-900">

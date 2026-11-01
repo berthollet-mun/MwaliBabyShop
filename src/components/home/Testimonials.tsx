@@ -27,10 +27,10 @@ export const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-[#F5F5F3]">
+    <section className="py-16 sm:py-24 bg-[#fff0f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-700 block mb-2">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-pink-700 block mb-2">
             Avis & Témoignages
           </span>
           <h2 className="font-['Playfair_Display',serif] text-3xl sm:text-4xl font-bold text-stone-900">
@@ -50,7 +50,7 @@ export const Testimonials: React.FC = () => {
               <Quote className="w-8 h-8 text-stone-200 absolute top-6 right-6" />
 
               <div className="space-y-4">
-                <div className="flex items-center gap-1 text-amber-500">
+                <div className="flex items-center gap-1 text-pink-500">
                   {[...Array(rev.rating)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-amber-400" />
                   ))}

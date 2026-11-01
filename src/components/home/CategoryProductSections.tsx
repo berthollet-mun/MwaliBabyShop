@@ -12,7 +12,7 @@ export const CategoryProductSections: React.FC<CategoryProductSectionsProps> = (
   const activeCategories = categories.filter(c => c.isActive).sort((a, b) => a.order - b.order);
 
   return (
-    <div className="space-y-16 sm:space-y-24 py-12 sm:py-16 bg-[#FAFAFA]">
+    <div className="space-y-16 sm:space-y-24 py-12 sm:py-16 bg-[#fffafc]">
       {activeCategories.map((category) => {
         const catProducts = products
           .filter(p => p.categoryId === category.id && p.isActive)
@@ -29,7 +29,7 @@ export const CategoryProductSections: React.FC<CategoryProductSectionsProps> = (
             {/* Header of category section */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-6 border-b border-stone-200 gap-4">
               <div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-amber-700 mb-1">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-[#e83c78] mb-1">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Rayon {category.name}</span>
                 </div>
@@ -46,7 +46,7 @@ export const CategoryProductSections: React.FC<CategoryProductSectionsProps> = (
                   onNavigate(`/categorie/${category.slug}`);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-stone-300 hover:border-stone-900 bg-white hover:bg-stone-900 text-xs font-bold uppercase tracking-wider text-stone-800 hover:text-white transition-all self-start sm:self-auto"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-stone-300 hover:border-[#5a237a] bg-white hover:bg-[#5a237a] text-xs font-bold uppercase tracking-wider text-stone-800 hover:text-white transition-all self-start sm:self-auto"
               >
                 <span>Voir tout ({catProducts.length}+)</span>
                 <ChevronRight className="w-4 h-4" />

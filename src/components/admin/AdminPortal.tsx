@@ -21,6 +21,7 @@ import { UserRole } from '../../types';
 import { DashboardView } from './DashboardView';
 import { ProductsManager } from './ProductsManager';
 import { CategoriesManager } from './CategoriesManager';
+import { BannersManager } from './BannersManager';
 import { UsersManager } from './UsersManager';
 import { SettingsManager } from './SettingsManager';
 
@@ -35,17 +36,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     showInfo('Session fermée', 'Vous avez été déconnecté de l’espace d’administration.');
   };
 
-  const isIT = role === UserRole.INFORMATICIEN;
+  const isIT = role === UserRole.ADMIN;
 
   const navigationItems = [
     { id: 'dashboard', label: 'Tableau de Bord', icon: LayoutDashboard },
     { id: 'products', label: 'Catalogue Articles', icon: Package },
     { id: 'categories', label: 'Catégories', icon: Layers },
+    { id: 'banners', label: 'Bannières & Carrousel', icon: ImageIcon },
     ...(isIT ? [{ id: 'users', label: 'Utilisateurs & Rôles', icon: Users }] : []),
     { id: 'settings', label: 'Paramètres', icon: Settings },
     ...(isIT ? [{ id: 'logs', label: 'Journal d’Audit & Logs', icon: Activity }] : []),
@@ -54,7 +56,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
   return (
     <div className="admin-portal min-h-screen bg-[#F8F9FA] flex flex-col lg:flex-row">
       {/* Sidebar for Desktop */}
-      <aside className="admin-desktop-sidebar hidden lg:flex w-72 bg-stone-950 text-white flex-col justify-between p-6 border-r border-stone-800 shrink-0">
+      <aside className="admin-desktop-sidebar hidden lg:flex w-72 bg-[#24103f] text-white flex-col justify-between p-6 border-r border-white/10 shrink-0">
         <div className="space-y-8">
           {/* Brand header */}
           <div className="space-y-1">
@@ -72,8 +74,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
           </div>
 
           {/* Current user role card */}
-          <div className="p-3.5 bg-stone-900 rounded-2xl border border-stone-800 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-stone-800 text-amber-400 font-bold flex items-center justify-center text-sm">
+          <div className="p-3.5 bg-stone-900 rounded-2xl border border-white/10 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-stone-800 text-[#ff8fb5] font-bold flex items-center justify-center text-sm">
               {currentUser?.name.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
@@ -115,7 +117,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
         </div>
 
         {/* Bottom Actions: View public site & Logout */}
-        <div className="pt-6 border-t border-stone-800 space-y-2">
+        <div className="pt-6 border-t border-white/10 space-y-2">
           <button
             onClick={onNavigateHome}
             className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 text-xs font-semibold text-stone-300 transition-colors"
@@ -137,13 +139,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
       </aside>
 
       {/* Mobile Top Header (Sticky) */}
-      <div className="admin-mobile-topbar lg:hidden bg-stone-950 text-white px-4 py-3 border-b border-stone-800 flex items-center justify-between sticky top-0 z-40">
+      <div className="admin-mobile-topbar lg:hidden bg-[#24103f] text-white px-4 py-3 border-b border-white/10 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-2 min-w-0">
           <span className="font-['Playfair_Display',serif] text-base sm:text-lg font-bold tracking-wider text-white truncate">
             MWALI
           </span>
           <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-stone-800 text-amber-300 rounded font-bold shrink-0">
-            {role === UserRole.INFORMATICIEN ? 'IT' : 'RESP'}
+            {role === UserRole.ADMIN ? 'ADMIN' : 'RESP'}
           </span>
         </div>
 
@@ -158,10 +160,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-stone-200 hover:text-white rounded-lg bg-stone-900 border border-stone-800"
+            className="p-2 text-stone-200 hover:text-white rounded-lg bg-stone-900 border border-white/10"
             aria-label="Menu navigation admin"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5 text-amber-400" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#ff8fb5]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
@@ -176,10 +178,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
           />
 
           {/* Drawer content */}
-          <div className="relative bg-stone-950 border-b border-stone-800 p-4 space-y-2 max-h-[calc(100vh-53px)] max-h-[calc(100dvh-53px)] overflow-y-auto shadow-2xl">
+          <div className="relative bg-[#24103f] border-b border-white/10 p-4 space-y-2 max-h-[calc(100vh-53px)] max-h-[calc(100dvh-53px)] overflow-y-auto shadow-2xl">
             {/* User status info */}
-            <div className="p-3 bg-stone-900 rounded-xl border border-stone-800 flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-stone-800 text-amber-400 font-bold flex items-center justify-center text-xs">
+            <div className="p-3 bg-stone-900 rounded-xl border border-white/10 flex items-center gap-3 mb-2">
+              <div className="w-9 h-9 rounded-lg bg-stone-800 text-[#ff8fb5] font-bold flex items-center justify-center text-xs">
                 {currentUser?.name.charAt(0)}
               </div>
               <div className="min-w-0 flex-1">
@@ -214,7 +216,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
               })}
             </nav>
 
-            <div className="pt-3 border-t border-stone-800 space-y-2">
+            <div className="pt-3 border-t border-white/10 space-y-2">
               <button
                 onClick={() => {
                   onNavigateHome();
@@ -245,6 +247,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onNavigateHome }) => {
         {activeTab === 'dashboard' && <DashboardView onNavigateTab={setActiveTab} />}
         {activeTab === 'products' && <ProductsManager />}
         {activeTab === 'categories' && <CategoriesManager />}
+        {activeTab === 'banners' && <BannersManager />}
         {activeTab === 'users' && <UsersManager />}
         {activeTab === 'settings' && <SettingsManager />}
 

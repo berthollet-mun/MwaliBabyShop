@@ -17,9 +17,9 @@ export const AddressContactHighlight: React.FC = () => {
   };
 
   return (
-    <section className="py-12 sm:py-16 bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 text-white relative overflow-hidden">
+    <section className="py-12 sm:py-16 bg-gradient-to-br from-[#24103f] via-[#32144f] to-[#24103f] text-white relative overflow-hidden">
       {/* Subtle decorative background glow */}
-      <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#e83c78]/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

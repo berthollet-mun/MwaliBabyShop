@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
               onClick={() => handleNav('/')}
               className="group flex flex-col text-left focus:outline-none shrink-0"
             >
-              <span className="font-['Playfair_Display',serif] text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-[0.12em] sm:tracking-[0.15em] text-stone-900 group-hover:text-amber-900 transition-colors whitespace-nowrap">
+              <span className="font-['Playfair_Display',serif] text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-[0.12em] sm:tracking-[0.15em] text-stone-900 group-hover:text-[#5a237a] transition-colors whitespace-nowrap">
                 {settings.companyName}
               </span>
               <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-stone-500 font-medium -mt-0.5 hidden min-[480px]:block whitespace-nowrap">
@@ -119,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
                 <button
                   type="button"
                   onClick={() => scrollNav('left')}
-                  className="flex items-center justify-center w-6 h-6 rounded-full bg-stone-900 text-white shadow-md hover:bg-stone-800 transition-all active:scale-95"
+                  className="flex items-center justify-center w-6 h-6 rounded-full bg-[#5a237a] text-white shadow-md hover:bg-[#2d1148] transition-all active:scale-95"
                   title="Catégories précédentes"
                   aria-label="Défiler vers la gauche"
                 >
@@ -142,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
                 onClick={() => handleNav('/')}
                 className={`shrink-0 px-2.5 py-1.5 xl:px-3 rounded-full text-[11px] xl:text-xs font-semibold tracking-wider uppercase transition-all whitespace-nowrap ${
                   currentPath === '/'
-                    ? 'bg-stone-900 text-white shadow-sm'
+                    ? 'bg-[#5a237a] text-white shadow-sm'
                     : 'text-stone-700 hover:text-stone-950 hover:bg-stone-100'
                 }`}
               >
@@ -160,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
                     title={cat.name}
                     className={`shrink-0 max-w-[130px] xl:max-w-[170px] 2xl:max-w-[200px] truncate px-2.5 py-1.5 xl:px-3 rounded-full text-[11px] xl:text-xs font-semibold tracking-wider uppercase transition-all whitespace-nowrap ${
                       isActive
-                        ? 'bg-stone-900 text-white shadow-sm'
+                        ? 'bg-[#5a237a] text-white shadow-sm'
                         : 'text-stone-700 hover:text-stone-950 hover:bg-stone-100'
                     }`}
                   >
@@ -176,7 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
                 <button
                   type="button"
                   onClick={() => scrollNav('right')}
-                  className="flex items-center justify-center w-6 h-6 rounded-full bg-stone-900 text-white shadow-md hover:bg-stone-800 transition-all active:scale-95"
+                  className="flex items-center justify-center w-6 h-6 rounded-full bg-[#5a237a] text-white shadow-md hover:bg-[#2d1148] transition-all active:scale-95"
                   title="Catégories suivantes"
                   aria-label="Défiler vers la droite"
                 >
@@ -208,13 +208,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
               onClick={() => handleNav(isAuthenticated ? '/admin' : '/admin/login')}
               className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full border transition-all shrink-0 ${
                 isAuthenticated
-                  ? 'bg-stone-900 border-stone-900 text-amber-400 shadow-sm ring-1 ring-amber-400/40'
+                  ? 'bg-[#5a237a] border-stone-900 text-[#ff8fb5] shadow-sm ring-1 ring-[#e83c78]/40'
                   : 'border-stone-200/90 bg-stone-50 hover:bg-stone-100 text-stone-700 hover:border-stone-300 shadow-sm'
               }`}
               title={isAuthenticated ? `Connecté : ${currentUser?.name} (${role})` : 'Espace Administration MWALI Baby Shop'}
               aria-label="Espace Administration"
             >
-              <ShieldCheck className="w-4 h-4 text-amber-600" />
+              <ShieldCheck className="w-4 h-4 text-[#e83c78]" />
             </button>
           </div>
 
@@ -268,7 +268,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenSea
                 Espace Administration
               </span>
               {isAuthenticated && (
-                <span className="px-2 py-0.5 text-[10px] bg-stone-900 text-white rounded">
+                <span className="px-2 py-0.5 text-[10px] bg-[#5a237a] text-white rounded">
                   {role}
                 </span>
               )}

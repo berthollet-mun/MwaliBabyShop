@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { StoreProvider } from './context/StoreContext';
+import { StoreProvider, useStore } from './context/StoreContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AddressRibbon } from './components/layout/AddressRibbon';
@@ -15,11 +15,17 @@ import { AboutPage } from './components/pages/AboutPage';
 import { ContactPage } from './components/pages/ContactPage';
 import { LegalPage } from './components/pages/LegalPage';
 import { NotFoundPage } from './components/pages/NotFoundPage';
-import { AdminPortal } from './components/admin/AdminPortal';
-import { AdminLoginPage } from './components/admin/AdminLoginPage';
+
+const AdminPortal = lazy(() => import('./components/admin/AdminPortal').then(module => ({ default: module.AdminPortal })));
+const AdminLoginPage = lazy(() => import('./components/admin/AdminLoginPage').then(module => ({ default: module.AdminLoginPage })));
+
+const AppFallback = () => (
+  <div className="min-h-screen grid place-items-center bg-[#fff8fb] text-[#32144f] text-sm font-semibold">Chargement de MWALI Baby Shop…</div>
+);
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isCheckingSession } = useAuth();
+  const { apiError, refreshStorefront } = useStore();
   const [currentPath, setCurrentPath] = useState<string>(() => {
     // Initial path from hash or pathname
     const hash = window.location.hash.replace(/^#/, '');
@@ -52,6 +58,17 @@ function AppContent() {
 
   // Check if we are in admin mode
   const isAdminRoute = currentPath.startsWith('/admin');
+
+  if (isAdminRoute && isCheckingSession) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-[#24103f] text-white" role="status" aria-live="polite">
+        <div className="text-center space-y-3">
+          <div className="mx-auto h-10 w-10 rounded-full border-4 border-white/25 border-t-[#e83c78] animate-spin" />
+          <p className="text-sm font-semibold">Vérification de la session sécurisée…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isAdminRoute) {
     if (!isAuthenticated) {
@@ -123,7 +140,7 @@ function AppContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAFA] text-stone-900 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-amber-200 selection:text-stone-900">
+    <div className="flex flex-col min-h-screen bg-[#fffafc] text-[#261d2c] font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#f8a9c4] selection:text-[#2d1148]">
       {/* 1. Address & Contact Ribbon (Ultra visible at the very top) */}
       <AddressRibbon />
 
@@ -134,6 +151,21 @@ function AppContent() {
         onOpenSearch={() => setIsSearchOpen(true)}
       />
 
+
+      {apiError && (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-amber-950" role="alert">
+          <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 text-xs sm:flex-row sm:items-center">
+            <span>{apiError}</span>
+            <button
+              type="button"
+              onClick={() => void refreshStorefront()}
+              className="rounded-full bg-white px-3 py-1 font-bold text-[#5a237a] shadow-sm ring-1 ring-[#5a237a]/20 hover:bg-[#fff8fb]"
+            >
+              Réessayer
+            </button>
+          </div>
+        </div>
+      )}
       {/* 3. Main Page Body with smooth luxury Fade-in entry */}
       <main className="flex-1 flex flex-col">
         <AnimatePresence mode="wait">
@@ -171,7 +203,9 @@ export default function App() {
     <StoreProvider>
       <AuthProvider>
         <ToastProvider>
-          <AppContent />
+          <Suspense fallback={<AppFallback />}>
+            <AppContent />
+          </Suspense>
         </ToastProvider>
       </AuthProvider>
     </StoreProvider>

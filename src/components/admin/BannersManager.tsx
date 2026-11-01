@@ -7,7 +7,7 @@ import { ImageUploaderModal } from './ImageUploaderModal';
 
 export const BannersManager: React.FC = () => {
   const { banners, addBanner, updateBanner, deleteBanner } = useStore();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export const BannersManager: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
       title: formData.title,
@@ -59,14 +59,18 @@ export const BannersManager: React.FC = () => {
       isActive: formData.isActive,
     };
 
-    if (editingId) {
-      updateBanner(editingId, payload);
-      showSuccess('Bannière mise à jour', `La bannière "${formData.title}" a été modifiée.`);
-    } else {
-      addBanner(payload);
-      showSuccess('Bannière créée', `La bannière "${formData.title}" est ajoutée au carrousel.`);
+    try {
+      if (editingId) {
+        await updateBanner(editingId, payload);
+        showSuccess('Bannière mise à jour', `La bannière "${formData.title}" a été modifiée.`);
+      } else {
+        await addBanner(payload);
+        showSuccess('Bannière créée', `La bannière "${formData.title}" est ajoutée au carrousel.`);
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      showError('Enregistrement impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
     }
-    setIsFormOpen(false);
   };
 
   return (
@@ -152,10 +156,14 @@ export const BannersManager: React.FC = () => {
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     if (confirm(`Supprimer la bannière "${banner.title}" ?`)) {
-                      deleteBanner(banner.id);
-                      showSuccess('Bannière supprimée', `"${banner.title}" a été retirée.`);
+                      try {
+                        await deleteBanner(banner.id);
+                        showSuccess('Bannière supprimée', `"${banner.title}" a été retirée.`);
+                      } catch (error) {
+                        showError('Suppression impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                      }
                     }
                   }}
                   className="p-1.5 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors"

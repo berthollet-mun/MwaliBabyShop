@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { LazyImage } from '../common/LazyImage';
 
@@ -8,7 +8,7 @@ interface CategoryGridProps {
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
-  const { categories, products } = useStore();
+  const { categories, products, isLoading } = useStore();
   const activeCategories = categories.filter(c => c.isActive).sort((a, b) => a.order - b.order);
 
   const getProductCount = (catId: string) => {
@@ -32,7 +32,18 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
 
         {/* Category Cards Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-          {activeCategories.map((category) => {
+          {isLoading && Array.from({ length: 5 }).map((_, index) => (
+            <div key={`category-skeleton-${index}`} className="overflow-hidden rounded-2xl border border-[#eedfe7] bg-white" aria-hidden="true">
+              <div className="relative aspect-[4/5] overflow-hidden bg-[#f8eaf1]">
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+              </div>
+              <div className="space-y-2 p-3">
+                <div className="h-3 w-4/5 rounded-full bg-[#f1dce7]" />
+                <div className="h-2.5 w-2/3 rounded-full bg-[#f6e8ef]" />
+              </div>
+            </div>
+          ))}
+          {!isLoading && activeCategories.map((category) => {
             const count = getProductCount(category.id);
             return (
               <div
@@ -59,7 +70,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
                       {category.name}
                     </span>
 
-                    <span className="hidden min-[380px]:flex w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/85 backdrop-blur-md items-center justify-center text-stone-900 group-hover:bg-amber-500 group-hover:text-stone-950 transition-colors shadow-sm shrink-0">
+                    <span className="hidden min-[380px]:flex w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/85 backdrop-blur-md items-center justify-center text-stone-900 group-hover:bg-[#e83c78] group-hover:text-white transition-colors shadow-sm shrink-0">
                       <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </span>
                   </div>

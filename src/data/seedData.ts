@@ -35,7 +35,7 @@ export const INITIAL_USERS: User[] = [
     id: 'user-2',
     name: 'Ingénieur Système MWALI',
     email: 'admin@mwalibabyshop.com',
-    role: 'INFORMATICIEN',
+    role: 'ADMIN',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     createdAt: '2024-01-10T09:00:00.000Z',
     lastLogin: '2024-04-12T10:15:00.000Z',

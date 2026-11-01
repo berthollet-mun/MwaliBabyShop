@@ -5,16 +5,20 @@ import { useToast } from '../../context/ToastContext';
 
 export const SettingsManager: React.FC = () => {
   const { settings, updateSettings } = useStore();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
   const [form, setForm] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateSettings(form);
-    setSaved(true);
-    showSuccess('Paramètres enregistrés', 'Les coordonnées de la boutique et de WhatsApp ont été mises à jour.');
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await updateSettings(form);
+      setSaved(true);
+      showSuccess('Paramètres enregistrés', 'Les coordonnées de la boutique et de WhatsApp ont été mises à jour.');
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      showError('Enregistrement impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+    }
   };
 
   return (

@@ -59,7 +59,7 @@ export const CategoriesManager: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanSlug =
       formData.slug.trim() ||
@@ -77,15 +77,18 @@ export const CategoriesManager: React.FC = () => {
       isActive: formData.isActive,
     };
 
-    if (editingId) {
-      updateCategory(editingId, payload);
-      showSuccess('Catégorie mise à jour', `L’univers "${formData.name}" a été modifié.`);
-    } else {
-      addCategory(payload);
-      showSuccess('Catégorie créée', `L’univers "${formData.name}" a été ajouté au catalogue.`);
+    try {
+      if (editingId) {
+        await updateCategory(editingId, payload);
+        showSuccess('Catégorie mise à jour', `L’univers "${formData.name}" a été modifié.`);
+      } else {
+        await addCategory(payload);
+        showSuccess('Catégorie créée', `L’univers "${formData.name}" a été ajouté au catalogue.`);
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      showError('Enregistrement impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
     }
-
-    setIsFormOpen(false);
   };
 
   const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
@@ -187,14 +190,18 @@ export const CategoriesManager: React.FC = () => {
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (count > 0) {
                         showError('Suppression impossible', `Cette catégorie contient ${count} articles. Réassignez-les au préalable.`);
                         return;
                       }
                       if (confirm(`Supprimer la catégorie "${cat.name}" ?`)) {
-                        deleteCategory(cat.id);
-                        showSuccess('Catégorie supprimée', `"${cat.name}" a été retirée.`);
+                        try {
+                          await deleteCategory(cat.id);
+                          showSuccess('Catégorie supprimée', `"${cat.name}" a été retirée.`);
+                        } catch (error) {
+                          showError('Suppression impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                        }
                       }
                     }}
                     className="p-2 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors"

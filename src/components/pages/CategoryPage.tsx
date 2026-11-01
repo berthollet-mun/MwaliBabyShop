@@ -60,7 +60,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
         </p>
         <button
           onClick={() => onNavigate('/')}
-          className="px-6 py-2.5 rounded-full bg-stone-900 text-white text-xs font-semibold uppercase tracking-wider"
+          className="px-6 py-2.5 rounded-full bg-[#5a237a] text-white text-xs font-semibold uppercase tracking-wider"
         >
           Retourner au catalogue
         </button>
@@ -78,7 +78,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] pb-16">
+    <div className="min-h-screen bg-[#fffafc] pb-16">
       {/* Minimal Header */}
       <div className="bg-white border-b border-stone-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -102,7 +102,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
 
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
               className="bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-400 font-medium"
             >
               <option value="featured">Sélection vedette</option>
@@ -128,7 +128,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
             </p>
             <button
               onClick={() => onNavigate('/')}
-              className="px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold"
+              className="px-4 py-2 rounded-lg bg-[#5a237a] text-white text-xs font-semibold"
             >
               Retourner aux catalogues
             </button>

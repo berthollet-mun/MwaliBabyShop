@@ -30,7 +30,7 @@ export const ProductsManager: React.FC = () => {
     toggleProductFeatured,
     toggleProductActive,
   } = useStore();
-  const { showSuccess, showInfo } = useToast();
+  const { showSuccess, showInfo, showError } = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCatFilter, setSelectedCatFilter] = useState('all');
@@ -116,7 +116,7 @@ export const ProductsManager: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanSlug =
       formData.slug.trim() ||
@@ -156,15 +156,18 @@ export const ProductsManager: React.FC = () => {
       tags,
     };
 
-    if (editingId) {
-      updateProduct(editingId, payload);
-      showSuccess('Article modifié avec succès', `La pièce "${formData.name}" a été mise à jour dans le catalogue.`);
-    } else {
-      addProduct(payload);
-      showSuccess('Nouvel article créé', `La pièce "${formData.name}" est enregistrée et prête.`);
+    try {
+      if (editingId) {
+        await updateProduct(editingId, payload);
+        showSuccess('Article modifié avec succès', `La pièce "${formData.name}" a été mise à jour dans le catalogue.`);
+      } else {
+        await addProduct(payload);
+        showSuccess('Nouvel article créé', `La pièce "${formData.name}" est enregistrée et prête.`);
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      showError('Enregistrement impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
     }
-
-    setIsFormOpen(false);
   };
 
   const handleAddImage = (newUrl: string) => {
@@ -287,12 +290,16 @@ export const ProductsManager: React.FC = () => {
 
                   <td className="py-3 px-4">
                     <button
-                      onClick={() => {
-                        toggleProductFeatured(prod.id);
-                        showInfo(
-                          prod.isFeatured ? 'Article retiré des vedettes' : 'Article mis en vedette',
-                          `"${prod.name}" a été mis à jour.`
-                        );
+                      onClick={async () => {
+                        try {
+                          await toggleProductFeatured(prod.id);
+                          showInfo(
+                            prod.isFeatured ? 'Article retiré des vedettes' : 'Article mis en vedette',
+                            `"${prod.name}" a été mis à jour.`
+                          );
+                        } catch (error) {
+                          showError('Mise à jour impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                        }
                       }}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1 transition-colors whitespace-nowrap ${
                         prod.isFeatured
@@ -307,12 +314,16 @@ export const ProductsManager: React.FC = () => {
 
                   <td className="py-3 px-4">
                     <button
-                      onClick={() => {
-                        toggleProductActive(prod.id);
-                        showInfo(
-                          prod.isActive ? 'Article masqué du catalogue' : 'Article publié en ligne',
-                          `Visibilité modifiée pour "${prod.name}".`
-                        );
+                      onClick={async () => {
+                        try {
+                          await toggleProductActive(prod.id);
+                          showInfo(
+                            prod.isActive ? 'Article masqué du catalogue' : 'Article publié en ligne',
+                            `Visibilité modifiée pour "${prod.name}".`
+                          );
+                        } catch (error) {
+                          showError('Mise à jour impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                        }
                       }}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1 whitespace-nowrap ${
                         prod.isActive
@@ -357,10 +368,14 @@ export const ProductsManager: React.FC = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           if (confirm(`Confirmez-vous la suppression de "${prod.name}" ?`)) {
-                            deleteProduct(prod.id);
-                            showSuccess('Article supprimé', `"${prod.name}" a été retiré du catalogue.`);
+                            try {
+                              await deleteProduct(prod.id);
+                              showSuccess('Article supprimé', `"${prod.name}" a été retiré du catalogue.`);
+                            } catch (error) {
+                              showError('Suppression impossible', error instanceof Error ? error.message : 'Veuillez réessayer.');
+                            }
                           }
                         }}
                         className="p-2 hover:bg-rose-100 rounded-lg text-rose-600 transition-colors"
@@ -471,7 +486,7 @@ export const ProductsManager: React.FC = () => {
                     </label>
                     <select
                       value={formData.availability}
-                      onChange={(e) => setFormData({ ...formData, availability: e.target.value as any })}
+                      onChange={(e) => setFormData({ ...formData, availability: e.target.value as NonNullable<Product['characteristics']['availability']> })}
                       className="admin-select"
                     >
                       <option value="En stock">En stock immédiat</option>

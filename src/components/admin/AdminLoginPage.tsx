@@ -33,7 +33,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#24103f] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Subtle background glow */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -55,13 +55,13 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
           <span className="font-['Playfair_Display',serif] text-2xl sm:text-3xl font-bold tracking-[0.15em] text-white">
             MWALI Baby Shop
           </span>
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-amber-400 font-semibold">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#ff8fb5] font-semibold">
             Espace d'Administration & Gestion
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 sm:space-y-6">
+        <div className="bg-[#32144f] border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 sm:space-y-6">
           <div className="space-y-1">
             <h2 className="text-base sm:text-lg font-bold text-white">Connexion Collaborateur</h2>
             <p className="text-xs text-stone-400">
@@ -88,7 +88,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="exemple@gmail.com"
-                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-stone-950 border border-stone-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
+                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
                 />
               </div>
             </div>
@@ -105,7 +105,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-stone-950 border border-stone-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
+                  className="admin-input w-full pl-9 pr-3 py-2.5 bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
                 />
               </div>
             </div>
@@ -113,50 +113,12 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 min-h-[46px] rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 min-h-[46px] rounded-xl bg-[#e83c78] hover:bg-[#cf2c67] text-white font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50"
             >
               <span>{loading ? 'Connexion en cours...' : 'Se Connecter'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick-fill helper for convenience */}
-          <div className="pt-4 border-t border-stone-800/80 space-y-2.5">
-            <p className="text-[11px] uppercase tracking-wider text-stone-400 font-semibold text-center">
-              Comptes d'accès rapide (Cliquez pour remplir)
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('admin@mwalibabyshop.com');
-                  setPassword('admin123');
-                }}
-                className="p-2.5 rounded-xl bg-stone-950/70 hover:bg-stone-800 border border-stone-800 text-left transition-all group"
-              >
-                <div className="text-[11px] font-bold text-amber-400 group-hover:text-amber-300">
-                  👑 Administrateur
-                </div>
-                <div className="text-[10px] text-stone-300 truncate">admin@mwalibabyshop.com</div>
-                <div className="text-[10px] text-stone-500">Mdp: <span className="text-stone-400 font-mono">admin123</span></div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('responsable@mwalibabyshop.com');
-                  setPassword('responsable123');
-                }}
-                className="p-2.5 rounded-xl bg-stone-950/70 hover:bg-stone-800 border border-stone-800 text-left transition-all group"
-              >
-                <div className="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300">
-                  📦 Responsable Catalogue
-                </div>
-                <div className="text-[10px] text-stone-300 truncate">responsable@mwalibabyshop.com</div>
-                <div className="text-[10px] text-stone-500">Mdp: <span className="text-stone-400 font-mono">responsable123</span></div>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
