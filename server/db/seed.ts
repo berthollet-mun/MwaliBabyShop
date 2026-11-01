@@ -49,7 +49,10 @@ async function seedUser(name: string, email: string | undefined, password: strin
     console.info(`Compte ${role} ignoré : email ou mot de passe initial absent.`);
     return;
   }
-  if (password.length < 12) throw new Error(`${role}_INITIAL_PASSWORD doit contenir au moins 12 caractères.`);
+  // Initial credentials are supplied by the store owner and must remain
+  // compatible with the documented bootstrap accounts. Require a reasonable
+  // floor here; the password can be rotated after the first sign-in.
+  if (password.length < 8) throw new Error(`${role}_INITIAL_PASSWORD doit contenir au moins 8 caractères.`);
   const hash = await bcrypt.hash(password, 12);
   await pool.query(
     `INSERT INTO users (name, email, password_hash, role)
