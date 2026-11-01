@@ -207,24 +207,25 @@ export const ProductsManager: React.FC = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="admin-filter-bar admin-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 sm:p-4">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="admin-filter-bar admin-catalog-filter-bar admin-card p-3 sm:p-4">
+        <div className="admin-catalog-search">
+          <Search className="admin-catalog-search-icon" aria-hidden="true" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Rechercher par nom ou référence..."
-            className="admin-input w-full pl-9 pr-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-stone-900"
+            className="admin-input admin-catalog-search-input"
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-stone-500 whitespace-nowrap shrink-0">Univers :</span>
+        <div className="admin-catalog-category-filter">
+          <label htmlFor="admin-category-filter" className="admin-catalog-category-label">Univers :</label>
           <select
+            id="admin-category-filter"
             value={selectedCatFilter}
             onChange={(e) => setSelectedCatFilter(e.target.value)}
-            className="admin-select bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs text-stone-800 focus:outline-none flex-1 sm:flex-none"
+            className="admin-select admin-catalog-category-select"
           >
             <option value="all">Toutes les catégories</option>
             {categories.map((c) => (
