@@ -493,6 +493,50 @@
   padding: 0.75rem 1rem 0.75rem 2.75rem !important;
 }
 
+.admin-input.admin-login-password-input {
+  padding-right: 3.25rem !important;
+}
+
+.admin-login-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  z-index: 2;
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.625rem;
+  background: transparent;
+  color: #a8a29e;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.admin-login-password-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.admin-login-password-toggle:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.admin-login-password-toggle:focus-visible {
+  outline: 2px solid #e83c78;
+  outline-offset: 1px;
+}
+
+.admin-login-password-toggle svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
 /* Catalogue admin : barre de recherche et filtre sans débordement.
    Les sélecteurs sont volontairement contraints pour rester dans la carte,
    y compris quand les libellés de catégories sont longs. */

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Mail, ArrowRight, ChevronLeft } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -12,6 +12,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
   const { showSuccess, showError } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -84,6 +85,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
                 <Mail className="admin-login-input-icon" aria-hidden="true" />
                 <input
                   type="email"
+                  autoComplete="username"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -100,13 +102,29 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onBackToSite }) 
               <div className="admin-login-input-wrap relative">
                 <Lock className="admin-login-input-icon" aria-hidden="true" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (!e.target.value) setShowPassword(false);
+                  }}
                   placeholder="••••••••"
-                  className="admin-input admin-login-input w-full bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
+                  className="admin-input admin-login-input admin-login-password-input w-full bg-[#24103f] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#e83c78]"
                 />
+                {password && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="admin-login-password-toggle"
+                    aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    aria-pressed={showPassword}
+                    title={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  >
+                    {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                  </button>
+                )}
               </div>
             </div>
 
