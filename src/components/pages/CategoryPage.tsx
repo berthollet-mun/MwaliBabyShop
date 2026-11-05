@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, SlidersHorizontal, Sparkles, MessageCircle } from 'lucide-react';
+import { ChevronLeft, Clock3, MessageCircle, RefreshCw } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useToast } from '../../context/ToastContext';
 import { ProductCard } from '../products/ProductCard';
@@ -11,19 +11,26 @@ interface CategoryPageProps {
 }
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) => {
-  const { categories, products, generateWhatsAppUrl, recordWhatsAppClick } = useStore();
+  const {
+    categories,
+    products,
+    generateWhatsAppUrl,
+    recordWhatsAppClick,
+    isLoading: isStoreLoading,
+    isSlowLoading,
+  } = useStore();
   const { showWhatsApp } = useToast();
   const [sortBy, setSortBy] = useState<'featured' | 'newest' | 'name-asc' | 'name-desc'>('featured');
   const [filterAvailability, setFilterAvailability] = useState<string>('all');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   const category = categories.find(c => c.slug === slug);
 
   // Smooth skeleton transition when changing category or filtering
   useEffect(() => {
-    setIsLoading(true);
+    setIsTransitioning(true);
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setIsTransitioning(false);
     }, 240);
     return () => clearTimeout(timer);
   }, [slug, sortBy, filterAvailability]);
@@ -48,6 +55,30 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
         return list.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
     }
   }, [category, products, sortBy, filterAvailability]);
+
+  if (!category && isStoreLoading) {
+    return (
+      <div className="mx-auto grid min-h-[55vh] max-w-3xl place-items-center px-4 py-16" role="status" aria-live="polite">
+        <div className="w-full rounded-3xl border border-[#ead8e5] bg-white p-6 text-center shadow-sm sm:p-10">
+          <span className="relative mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fce8f0] text-[#c92561]">
+            {isSlowLoading ? <Clock3 className="h-5 w-5" /> : <RefreshCw className="h-5 w-5 animate-spin" />}
+            <span className="mwali-loading-pulse absolute inset-0 rounded-full border border-[#e83c78]/25" aria-hidden="true" />
+          </span>
+          <h2 className="mt-5 font-['Playfair_Display',serif] text-xl font-bold text-[#32144f] sm:text-2xl">
+            {isSlowLoading ? 'La boutique prépare cette collection…' : 'Chargement de la collection…'}
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-stone-500 sm:text-sm">
+            {isSlowLoading
+              ? 'Le serveur se réveille après une période de repos. Vous serez redirigé automatiquement dès que les articles seront prêts.'
+              : 'Nous récupérons les articles, leurs photos et leurs disponibilités.'}
+          </p>
+          <div className="mx-auto mt-5 h-1.5 max-w-sm overflow-hidden rounded-full bg-[#f2e4eb]" aria-hidden="true">
+            <span className="mwali-loading-progress block h-full rounded-full bg-gradient-to-r from-[#5a237a] via-[#e83c78] to-[#ff9d3d]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!category) {
     return (
@@ -116,7 +147,17 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ slug, onNavigate }) 
 
       {/* Product Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {isLoading ? (
+        {isStoreLoading && (
+          <div className="mb-5 flex items-start gap-3 rounded-2xl border border-[#ead8e5] bg-white px-4 py-3 text-[#32144f] shadow-sm" role="status">
+            <RefreshCw className="mt-0.5 h-4 w-4 shrink-0 animate-spin text-[#e83c78]" />
+            <div>
+              <p className="text-xs font-bold">Actualisation des articles en cours…</p>
+              <p className="mt-0.5 text-[10px] text-stone-500">La sélection affichée reste consultable pendant la mise à jour.</p>
+            </div>
+          </div>
+        )}
+
+        {isTransitioning ? (
           <ProductGridSkeleton count={8} />
         ) : categoryProducts.length === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-12 text-center space-y-3">

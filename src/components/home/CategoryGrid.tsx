@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Clock3, RefreshCw, Sparkles, Wifi } from 'lucide-react';
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
@@ -87,6 +88,8 @@ const AnimatedCategoryCard: React.FC<AnimatedCategoryCardProps> = ({
           <LazyImage
             src={category.image || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600'}
             alt={category.name}
+            loading={index < 2 ? 'eager' : 'lazy'}
+            fetchPriority={index === 0 ? 'high' : 'auto'}
             containerClassName="w-full h-full"
             className="h-full w-full object-cover object-center"
           />
@@ -134,7 +137,16 @@ const AnimatedCategoryCard: React.FC<AnimatedCategoryCardProps> = ({
 };
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
-  const { categories, products, isLoading } = useStore();
+  const {
+    categories,
+    products,
+    isLoading,
+    isRefreshing,
+    isSlowLoading,
+    loadAttempt,
+    apiError,
+    refreshStorefront,
+  } = useStore();
   const shouldReduceMotion = useReducedMotion();
   const activeCategories = categories.filter(c => c.isActive).sort((a, b) => a.order - b.order);
 
@@ -197,8 +209,73 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
           </motion.p>
         </motion.div>
 
+        <AnimatePresence mode="wait">
+          {(isLoading || isRefreshing) && (
+            <motion.div
+              key={isSlowLoading ? 'slow-loading' : isRefreshing ? 'refreshing' : 'loading'}
+              role="status"
+              aria-live="polite"
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="mwali-loading-notice mb-5 flex items-start gap-3 rounded-2xl border border-[#ead8e5] bg-white/80 px-4 py-3 shadow-sm backdrop-blur-xl sm:mb-6 sm:items-center sm:px-5"
+            >
+              <span className="relative mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fce8f0] text-[#c92561] sm:mt-0">
+                {isSlowLoading ? <Clock3 className="h-4 w-4" /> : <RefreshCw className="h-4 w-4 animate-spin" />}
+                <span className="absolute inset-0 rounded-full border border-[#e83c78]/20 mwali-loading-pulse" aria-hidden="true" />
+              </span>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-extrabold text-[#32144f] sm:text-sm">
+                  {isSlowLoading
+                    ? 'La boutique se réveille… vous pouvez déjà explorer la sélection.'
+                    : isRefreshing
+                      ? 'Les articles sont affichés. Nous vérifions les nouveautés…'
+                      : 'Chargement de vos collections MWALI…'}
+                </p>
+                <p className="mt-0.5 text-[10px] leading-relaxed text-stone-500 sm:text-xs">
+                  {isSlowLoading
+                    ? `Connexion au catalogue en direct — tentative ${loadAttempt} sur 3. Cette page restera disponible.`
+                    : 'Nous préparons les catégories, les disponibilités et les dernières photos.'}
+                </p>
+                <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#f2e4eb]" aria-hidden="true">
+                  <span className="mwali-loading-progress block h-full rounded-full bg-gradient-to-r from-[#5a237a] via-[#e83c78] to-[#ff9d3d]" />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {apiError && !isLoading && !isRefreshing && (
+            <motion.div
+              key="catalog-fallback"
+              role="status"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-5 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50/90 px-4 py-3 text-amber-950 shadow-sm sm:mb-6 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="flex min-w-0 items-start gap-2.5">
+                <Wifi className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+                <div>
+                  <p className="text-xs font-extrabold sm:text-sm">La sélection reste disponible pendant la reconnexion.</p>
+                  <p className="mt-0.5 text-[10px] text-amber-800 sm:text-xs">{apiError}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => void refreshStorefront()}
+                className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-extrabold text-[#5a237a] shadow-sm ring-1 ring-[#5a237a]/15 transition hover:bg-[#fff8fb] active:scale-95"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                Réessayer
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-5 lg:gap-6">
-          {isLoading && Array.from({ length: 5 }).map((_, index) => (
+          {isLoading && !isSlowLoading && Array.from({ length: 5 }).map((_, index) => (
             <div key={`category-skeleton-${index}`} className="overflow-hidden rounded-[1.35rem] border border-[#eedfe7] bg-white" aria-hidden="true">
               <div className="relative aspect-[3/4] overflow-hidden bg-[#f8eaf1] sm:aspect-[4/5]">
                 <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/70 to-transparent" />
@@ -209,7 +286,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
               </div>
             </div>
           ))}
-          {!isLoading && activeCategories.map((category, index) => (
+          {(!isLoading || isSlowLoading) && activeCategories.map((category, index) => (
             <AnimatedCategoryCard
               key={category.id}
               category={category}
@@ -219,6 +296,21 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onNavigate }) => {
             />
           ))}
         </motion.div>
+
+        {!isLoading && activeCategories.length === 0 && (
+          <div className="rounded-[1.35rem] border border-dashed border-[#d8bdd0] bg-white/70 px-5 py-10 text-center backdrop-blur-sm">
+            <p className="text-sm font-extrabold text-[#32144f]">Les collections sont en cours de synchronisation.</p>
+            <p className="mt-1 text-xs text-stone-500">La connexion a peut-être été interrompue. Vous pouvez relancer le chargement.</p>
+            <button
+              type="button"
+              onClick={() => void refreshStorefront()}
+              className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#5a237a] px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-[#42175e] active:scale-95"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Recharger le catalogue
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

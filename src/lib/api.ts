@@ -1,4 +1,5 @@
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const REQUEST_TIMEOUT_MS = 30000;
 
 let csrfToken = '';
 
@@ -33,11 +34,30 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}, retryC
   if (init.body && !(init.body instanceof FormData)) headers.set('Content-Type', 'application/json');
   if (needsCsrf) headers.set('X-CSRF-Token', csrfToken);
 
-  const response = await fetch(`${API_BASE}/api${path}`, {
-    ...init,
-    headers,
-    credentials: 'include',
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const callerSignal = init.signal;
+  const abortFromCaller = () => controller.abort();
+  if (callerSignal?.aborted) controller.abort();
+  else callerSignal?.addEventListener('abort', abortFromCaller, { once: true });
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/api${path}`, {
+      ...init,
+      headers,
+      credentials: 'include',
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new ApiError('Le serveur met plus de temps que prévu à répondre.', 408);
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+    callerSignal?.removeEventListener('abort', abortFromCaller);
+  }
 
   if (response.status === 403 && needsCsrf && retryCsrf) {
     await refreshCsrfToken();

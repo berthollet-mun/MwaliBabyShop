@@ -128,6 +128,17 @@ body {
   50% { transform: translate3d(2rem, -1rem, 0) scale(1.16); opacity: 1; }
 }
 
+@keyframes mwali-loading-progress {
+  0% { transform: translateX(-82%) scaleX(0.25); }
+  45% { transform: translateX(18%) scaleX(0.65); }
+  100% { transform: translateX(210%) scaleX(0.3); }
+}
+
+@keyframes mwali-loading-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 0; }
+}
+
 .mwali-scroll-progress {
   position: fixed;
   z-index: 100;
@@ -248,6 +259,20 @@ body {
   animation-delay: -4.5s;
 }
 
+.mwali-loading-notice {
+  box-shadow: 0 18px 45px -34px rgba(90, 35, 122, 0.55);
+}
+
+.mwali-loading-progress {
+  width: 48%;
+  transform-origin: center;
+  animation: mwali-loading-progress 1.65s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.mwali-loading-pulse {
+  animation: mwali-loading-pulse 1.8s ease-out infinite;
+}
+
 @media (hover: none) and (pointer: coarse) {
   .mwali-category-card {
     box-shadow: 0 14px 34px -24px rgba(45, 17, 72, 0.58);
@@ -265,7 +290,9 @@ body {
   .mwali-title-shine,
   .mwali-spark,
   .mwali-ribbon-light,
-  .mwali-footer-aurora {
+  .mwali-footer-aurora,
+  .mwali-loading-progress,
+  .mwali-loading-pulse {
     animation: none !important;
   }
 }

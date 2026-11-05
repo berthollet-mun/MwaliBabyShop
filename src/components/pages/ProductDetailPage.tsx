@@ -4,6 +4,8 @@ import {
   ChevronLeft,
   MapPin,
   CheckCircle2,
+  Clock3,
+  RefreshCw,
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useToast } from '../../context/ToastContext';
@@ -22,6 +24,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug, onNa
     generateDiscussPriceWhatsAppUrl,
     recordWhatsAppClick,
     incrementProductViews,
+    isLoading,
+    isSlowLoading,
+    apiError,
+    refreshStorefront,
   } = useStore();
   const { showWhatsApp } = useToast();
 
@@ -34,6 +40,35 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug, onNa
     }
   }, [product?.id]);
 
+  if (!product && isLoading) {
+    return (
+      <div className="mx-auto grid min-h-[60vh] max-w-5xl place-items-center px-4 py-12" role="status" aria-live="polite">
+        <div className="grid w-full gap-6 rounded-3xl border border-[#ead8e5] bg-white p-4 shadow-sm sm:p-7 md:grid-cols-2">
+          <div className="aspect-square overflow-hidden rounded-2xl bg-[#f8eaf1]">
+            <div className="h-full w-full -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/75 to-transparent" />
+          </div>
+          <div className="flex flex-col justify-center p-2 sm:p-4">
+            <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-[#fce8f0] text-[#c92561]">
+              {isSlowLoading ? <Clock3 className="h-5 w-5" /> : <RefreshCw className="h-5 w-5 animate-spin" />}
+              <span className="mwali-loading-pulse absolute inset-0 rounded-full border border-[#e83c78]/25" aria-hidden="true" />
+            </span>
+            <h2 className="mt-5 font-['Playfair_Display',serif] text-xl font-bold text-[#32144f] sm:text-2xl">
+              {isSlowLoading ? 'Votre article arrive…' : 'Chargement de la fiche article…'}
+            </h2>
+            <p className="mt-2 text-xs leading-relaxed text-stone-500 sm:text-sm">
+              {isSlowLoading
+                ? 'Render termine le réveil du catalogue. Gardez cette page ouverte : la fiche apparaîtra automatiquement.'
+                : 'Nous récupérons les photos, les tailles et la disponibilité en boutique.'}
+            </p>
+            <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#f2e4eb]" aria-hidden="true">
+              <span className="mwali-loading-progress block h-full rounded-full bg-gradient-to-r from-[#5a237a] via-[#e83c78] to-[#ff9d3d]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-3">
@@ -41,14 +76,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug, onNa
           Article Introuvable
         </h2>
         <p className="text-stone-500 text-xs">
-          Cet article n'est plus disponible ou a été déplacé.
+          {apiError ? 'La connexion au catalogue n’a pas abouti. Vous pouvez essayer de nouveau.' : "Cet article n'est plus disponible ou a été déplacé."}
         </p>
-        <button
-          onClick={() => onNavigate('/')}
-          className="px-5 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold"
-        >
-          Retourner aux catalogues
-        </button>
+        <div className="flex flex-col justify-center gap-2 sm:flex-row">
+          {apiError && (
+            <button
+              type="button"
+              onClick={() => void refreshStorefront()}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#5a237a] px-5 py-2 text-xs font-semibold text-white"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Réessayer
+            </button>
+          )}
+          <button
+            onClick={() => onNavigate('/')}
+            className="min-h-10 rounded-lg bg-stone-900 px-5 py-2 text-xs font-semibold text-white"
+          >
+            Retourner aux catalogues
+          </button>
+        </div>
       </div>
     );
   }

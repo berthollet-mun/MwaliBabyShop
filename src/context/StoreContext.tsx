@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ActivityLog, Banner, Category, Product, SiteSettings, User, WhatsAppClickEvent } from '../types';
 import { INITIAL_BANNERS, INITIAL_CATEGORIES, INITIAL_PRODUCTS, INITIAL_SETTINGS } from '../data/seedData';
 import { getDiscussPriceWhatsAppUrl } from '../config/whatsapp';
@@ -10,6 +10,44 @@ interface StorefrontPayload {
   banners: Banner[];
   settings: SiteSettings;
 }
+
+interface CachedStorefront {
+  data: StorefrontPayload;
+  cachedAt: string;
+}
+
+const STOREFRONT_CACHE_KEY = 'mwali_storefront_cache_v2';
+const STOREFRONT_CACHE_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
+const STOREFRONT_RETRY_DELAYS = [0, 1200, 2600];
+
+const readCachedStorefront = (): CachedStorefront | null => {
+  try {
+    const raw = window.localStorage.getItem(STOREFRONT_CACHE_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw) as CachedStorefront;
+    const age = Date.now() - new Date(cached.cachedAt).getTime();
+    if (!cached.data || !Array.isArray(cached.data.categories) || !Array.isArray(cached.data.products) || age > STOREFRONT_CACHE_MAX_AGE) {
+      window.localStorage.removeItem(STOREFRONT_CACHE_KEY);
+      return null;
+    }
+    return cached;
+  } catch {
+    return null;
+  }
+};
+
+const writeCachedStorefront = (data: StorefrontPayload) => {
+  try {
+    window.localStorage.setItem(STOREFRONT_CACHE_KEY, JSON.stringify({
+      data,
+      cachedAt: new Date().toISOString(),
+    } satisfies CachedStorefront));
+  } catch {
+    // Le stockage peut être désactivé en navigation privée. Le catalogue reste fonctionnel.
+  }
+};
+
+const wait = (duration: number) => new Promise(resolve => window.setTimeout(resolve, duration));
 
 interface AdminPayload extends StorefrontPayload {
   users: User[];
@@ -29,6 +67,10 @@ interface StoreContextType {
   whatsAppClicksTotal: number;
   clickEvents: WhatsAppClickEvent[];
   isLoading: boolean;
+  isRefreshing: boolean;
+  isSlowLoading: boolean;
+  loadAttempt: number;
+  lastUpdatedAt: string | null;
   refreshStorefront: () => Promise<void>;
   apiError: string | null;
   refreshAdminData: () => Promise<void>;
@@ -58,16 +100,22 @@ interface StoreContextType {
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-  const [banners, setBanners] = useState<Banner[]>(INITIAL_BANNERS);
-  const [settings, setSettings] = useState<SiteSettings>(INITIAL_SETTINGS);
+  const [initialCache] = useState<CachedStorefront | null>(() => readCachedStorefront());
+  const [categories, setCategories] = useState<Category[]>(initialCache?.data.categories ?? INITIAL_CATEGORIES);
+  const [products, setProducts] = useState<Product[]>(initialCache?.data.products ?? INITIAL_PRODUCTS);
+  const [banners, setBanners] = useState<Banner[]>(initialCache?.data.banners ?? INITIAL_BANNERS);
+  const [settings, setSettings] = useState<SiteSettings>(initialCache?.data.settings ?? INITIAL_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [totalVisits, setTotalVisits] = useState(0);
   const [clickEvents, setClickEvents] = useState<WhatsAppClickEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!initialCache);
+  const [isRefreshing, setIsRefreshing] = useState(Boolean(initialCache));
+  const [isSlowLoading, setIsSlowLoading] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(1);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(initialCache?.cachedAt ?? null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const hasUsableStorefront = useRef(Boolean(initialCache));
 
   const applyStorefront = useCallback((data: StorefrontPayload) => {
     if (data.categories) setCategories(data.categories);
@@ -77,14 +125,43 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const loadStorefront = useCallback(async () => {
+    const showingExistingData = hasUsableStorefront.current;
+    setIsLoading(!showingExistingData);
+    setIsRefreshing(showingExistingData);
+    setIsSlowLoading(false);
+    setApiError(null);
+    const slowLoadingTimer = window.setTimeout(() => setIsSlowLoading(true), 3500);
+
     try {
-      const data = await api.get<StorefrontPayload>('/storefront');
-      applyStorefront(data);
-      setApiError(null);
+      let latestError: unknown;
+
+      for (let index = 0; index < STOREFRONT_RETRY_DELAYS.length; index += 1) {
+        setLoadAttempt(index + 1);
+        if (STOREFRONT_RETRY_DELAYS[index] > 0) await wait(STOREFRONT_RETRY_DELAYS[index]);
+
+        try {
+          const data = await api.get<StorefrontPayload>('/storefront');
+          applyStorefront(data);
+          writeCachedStorefront(data);
+          const updatedAt = new Date().toISOString();
+          setLastUpdatedAt(updatedAt);
+          hasUsableStorefront.current = true;
+          setApiError(null);
+          return;
+        } catch (error) {
+          latestError = error;
+        }
+      }
+
+      throw latestError;
     } catch {
-      setApiError('Le catalogue en direct est momentanément indisponible. Une sélection locale est affichée.');
+      hasUsableStorefront.current = true;
+      setApiError('Le serveur met plus de temps que prévu. La dernière sélection disponible reste affichée.');
     } finally {
+      window.clearTimeout(slowLoadingTimer);
       setIsLoading(false);
+      setIsRefreshing(false);
+      setIsSlowLoading(false);
     }
   }, [applyStorefront]);
 
@@ -99,6 +176,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const refreshAdminData = useCallback(async () => {
     const data = await api.get<AdminPayload>('/admin/bootstrap');
     applyStorefront(data);
+    writeCachedStorefront(data);
+    setLastUpdatedAt(new Date().toISOString());
+    hasUsableStorefront.current = true;
     setUsers(data.users || []);
     setLogs(data.logs || []);
     setTotalVisits(data.totalVisits || 0);
@@ -243,7 +323,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <StoreContext.Provider value={{
       categories, products, banners, settings, users, logs, totalVisits, whatsAppClicksTotal,
-      clickEvents, isLoading, apiError, refreshStorefront: loadStorefront, refreshAdminData,
+      clickEvents, isLoading, isRefreshing, isSlowLoading, loadAttempt, lastUpdatedAt,
+      apiError, refreshStorefront: loadStorefront, refreshAdminData,
       addProduct, updateProduct, deleteProduct, toggleProductFeatured, toggleProductActive, incrementProductViews,
       addCategory, updateCategory, deleteCategory, addBanner, updateBanner, deleteBanner,
       addUser, updateUser, deleteUser, updateSettings,
